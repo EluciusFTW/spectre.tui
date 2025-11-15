@@ -49,10 +49,15 @@ public sealed class Terminal : ITerminal
 
     public void Flush()
     {
-        var lol = _buffer.ToString();
-        var utf8 = Encoding.UTF8.GetBytes(lol);
-        var _ = write(1, utf8, utf8.Length);
-        _buffer.Clear();
+        try
+        {
+            var bytes = Encoding.UTF8.GetBytes(_buffer.ToString());
+            var _ = write(1, bytes, bytes.Length);
+        }
+        finally
+        {
+            _buffer.Clear();
+        }
     }
 
     public void Clear()

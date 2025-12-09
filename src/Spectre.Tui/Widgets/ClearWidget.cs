@@ -1,6 +1,6 @@
 namespace Spectre.Tui;
 
-public sealed class ClearWidget(Rune rune) : IWidget
+public sealed class ClearWidget(Rune rune, Decoration decoration = Decoration.None) : IWidget
 {
     public void Render(IRendererContext context)
     {
@@ -8,7 +8,11 @@ public sealed class ClearWidget(Rune rune) : IWidget
         {
             for (var y = 0; y < context.Viewport.Height; y++)
             {
-                context.SetRune(x, y, rune);
+                context.SetCell(x, y, new Cell
+                {
+                    Decoration = decoration,
+                    Rune = rune,
+                });
             }
         }
     }

@@ -43,6 +43,20 @@ public sealed class RectangleTests
         public void Should_Inflate_Region_With_Expected_Size()
         {
             // Given
+            var region = new Rectangle(3, 5, 7, 10);
+
+            // When
+            var result = region.Inflate(2, 3);
+
+            // Then
+            result.ShouldBe(
+                new Rectangle(1, 2, 11, 16));
+        }
+
+        [Fact]
+        public void Should_Inflate_Region_With_Expected_Size_But_Clamp_Position()
+        {
+            // Given
             var region = new Rectangle(1, 2, 5, 10);
 
             // When
@@ -50,7 +64,7 @@ public sealed class RectangleTests
 
             // Then
             result.ShouldBe(
-                new Rectangle(-1, -1, 9, 16));
+                new Rectangle(0, 0, 9, 16));
         }
 
         [Fact]
@@ -101,5 +115,77 @@ public sealed class RectangleTests
             result.ShouldBe(
                 new Rectangle(1, 2, 17, 22));
         }
+    }
+
+    public sealed class TheIntersectMethod
+    {
+        [Fact]
+        public void Should_Throw_If_No_Intersection_Could_Be_Made()
+        {
+            // Given
+            var r1 = new Rectangle(0, 0, 10, 10);
+            var r2 = new Rectangle(11, 11, 10, 10);
+
+            // When
+            var result = Record.Exception(() => r1.Intersect(r2));
+
+            // Then
+            result.ShouldBeOfType<InvalidOperationException>()
+                .Message.ShouldBe("The two rectangles do not intersect");
+        }
+
+        [Fact]
+        public void Should_Return_Intersection()
+        {
+            // Given
+            var r1 = new Rectangle(0, 0, 15, 12);
+            var r2 = new Rectangle(5, 5, 10, 10);
+
+            // When
+            var result = r1.Intersect(r2);
+
+            // Then
+            result.ShouldBe(
+                new Rectangle(5, 5, 10, 7));
+        }
+    }
+
+    [Fact]
+    public void Should_Consider_Two_Equal_Rectangles_Equal()
+    {
+        // Given
+        var first = new Rectangle(1, 2, 3, 5);
+        var second = new Rectangle(1, 2, 3, 5);
+
+        // When
+        var result = first == second;
+
+        // Then
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Should_Not_Consider_Two_Inequal_Rectangles_Equal()
+    {
+        // Given
+        var first = new Rectangle(1, 2, 3, 5);
+        var second = new Rectangle(1, 2, 3, 7);
+
+        // When
+        var result = first == second;
+
+        // Then
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Should_Return_Same_HashCode_For_Two_Equal_Rectangles()
+    {
+        // Given, When
+        var first = new Rectangle(1, 2, 3, 5);
+        var second = new Rectangle(1, 2, 3, 5);
+
+        // Then
+        first.ShouldBe(second);
     }
 }

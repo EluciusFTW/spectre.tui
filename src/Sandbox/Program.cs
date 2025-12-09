@@ -16,12 +16,16 @@ public static class Program
         {
             renderer.Draw((ctx, _) =>
             {
-                // Clear the background
-                ctx.Render(new ClearWidget(new Rune('▄')));
+                // Outer box
+                ctx.Render(new BoxWidget());
+                ctx.Render(new ClearWidget(new Rune('.')), ctx.Viewport.Inflate(-1, -1));
 
-                // Render a box
-                var inner = ctx.Viewport.Inflate(new Size(-5, -5));
+                // Inner box
+                var inner = ctx.Viewport.Inflate(new Size(-10, -5));
                 ctx.Render(new BoxWidget(), inner);
+                ctx.Render(
+                    new ClearWidget(new Rune('O'), Decoration.Bold),
+                    inner.Inflate(-1, -1));
             });
 
             // Time to quit?

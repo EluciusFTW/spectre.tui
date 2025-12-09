@@ -43,7 +43,7 @@ public sealed class Terminal : ITerminal
             }
 
             lastPosition = new Position(x, y);
-            Write((char)cell.Rune.Value);
+            Write(AnsiBuilder.GetAnsi(cell));
         }
     }
 
@@ -90,5 +90,70 @@ public sealed class Terminal : ITerminal
     private void Write(ReadOnlySpan<char> text)
     {
         _buffer.Append(text.ToArray());
+    }
+}
+
+public static class AnsiBuilder
+{
+    private const string ESC = "\u001b";
+    private const string CSI = ESC + "[";
+
+    public static string GetAnsi(Cell cell)
+    {
+        return $"{SGR(GetAnsiCodes(cell.Decoration))}{cell.Rune}{SGR(0)}";
+    }
+
+    private static string SGR(params IEnumerable<byte> codes)
+    {
+        var joinedCodes = string.Join(";", codes.Select(c => c.ToString()));
+        return $"{CSI}{joinedCodes}m";
+    }
+
+    private static IEnumerable<byte> GetAnsiCodes(Decoration decoration)
+    {
+        if ((decoration & Decoration.Bold) != 0)
+        {
+            yield return 1;
+        }
+
+        if ((decoration & Decoration.Dim) != 0)
+        {
+            yield return 2;
+        }
+
+        if ((decoration & Decoration.Italic) != 0)
+        {
+            yield return 3;
+        }
+
+        if ((decoration & Decoration.Underlined) != 0)
+        {
+            yield return 4;
+        }
+
+        if ((decoration & Decoration.SlowBlink) != 0)
+        {
+            yield return 5;
+        }
+
+        if ((decoration & Decoration.RapidBlink) != 0)
+        {
+            yield return 6;
+        }
+
+        if ((decoration & Decoration.Invert) != 0)
+        {
+            yield return 7;
+        }
+
+        if ((decoration & Decoration.Conceal) != 0)
+        {
+            yield return 8;
+        }
+
+        if ((decoration & Decoration.Strikethrough) != 0)
+        {
+            yield return 9;
+        }
     }
 }

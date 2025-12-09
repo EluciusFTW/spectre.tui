@@ -4,58 +4,66 @@ public interface IRendererContext
 {
     Rectangle Viewport { get; }
 
-    void Render(IWidget widget);
     void Render(IWidget widget, Rectangle area);
 
     /// <summary>
-    /// Sets the rune at the specified (viewport) coordinates.
+    /// Sets the cell at the specified (viewport) coordinates.
     /// </summary>
-    void SetRune(int x, int y, Rune rune);
+    void SetCell(int x, int y, Cell cell);
 }
 
 public static class IRenderContextExtensions
 {
     extension(IRendererContext context)
     {
+        public void Render(IWidget widget)
+        {
+            context.Render(widget, context.Viewport);
+        }
+
         public void SetRune(int x, int y, char rune)
         {
             context.SetRune(x, y, new Rune(rune));
         }
+
+        public void SetRune(int x, int y, Rune rune)
+        {
+            context.SetCell(x, y, new Cell { Rune = rune });
+        }
     }
 }
 
-internal class RenderContext : IRendererContext
+internal sealed record RenderContext : IRendererContext
 {
     public Buffer Buffer { get; }
-    public Rectangle Screen { get; }
-    public Rectangle Viewport { get; }
+    public Rectangle Screen { get; private init; }
+    public Rectangle Viewport { get; private init; }
 
     public RenderContext(Buffer buffer, Rectangle screen, Rectangle viewport)
     {
-        Buffer = buffer;
+        Buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
         Screen = screen;
         Viewport = viewport;
     }
 
-    public void Render(IWidget widget)
-    {
-        widget.Render(this);
-    }
-
     public void Render(IWidget widget, Rectangle area)
     {
-        var screen = new Rectangle(Screen.X + area.X, Screen.Y + area.Y, area.Width, area.Height);
-        var viewport = new Rectangle(0, 0, screen.Width, screen.Height);
-        widget.Render(new RenderContext(Buffer, screen, viewport));
-    }
-
-    public void SetRune(int x, int y, Rune rune)
-    {
-        if (!Viewport.Contains(x, y))
+        if (area.Width == 0 || area.Height == 0)
         {
             return;
         }
 
-        Buffer.SetRune(Screen.X + x, Screen.Y + y, rune);
+        var screen = Screen.Intersect(
+            new Rectangle(
+                Screen.X + area.X, Screen.Y + area.Y,
+                area.Width, area.Height));
+
+        var viewport = new Rectangle(0, 0, screen.Width, screen.Height);
+        widget.Render(this with { Screen = screen, Viewport = viewport });
+    }
+
+    public void SetCell(int x, int y, Cell cell)
+    {
+        Buffer.SetCell(Screen.X + x, Screen.Y + y, cell);
     }
 }

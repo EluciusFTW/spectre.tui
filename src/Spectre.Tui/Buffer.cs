@@ -2,17 +2,17 @@ namespace Spectre.Tui;
 
 internal sealed class Buffer
 {
-    public Rectangle Screen { get; private set; }
-    public Cell[] Cells { get; private set; }
-    public int Length { get; private set; }
+    private Rectangle _screen;
+    private Cell[] _cells;
+    private int _length;
 
     internal Buffer(Rectangle screen, Cell[] cells)
     {
-        Screen = screen;
-        Cells = cells ?? throw new ArgumentNullException(nameof(cells));
-        Length = screen.CalculateArea();
+        _screen = screen;
+        _cells = cells ?? throw new ArgumentNullException(nameof(cells));
+        _length = screen.CalculateArea();
 
-        if (Length != Cells.Length)
+        if (_length != _cells.Length)
         {
             throw new InvalidOperationException("Mismatch between buffer size and provided area");
         }
@@ -20,45 +20,37 @@ internal sealed class Buffer
 
     public Cell GetCell(int index)
     {
-        return index < 0 || index >= Length
+        return index < 0 || index >= _length
             ? default
-            : Cells[index];
+            : _cells[index];
     }
 
     public Cell GetCell(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= Screen.Width || y >= Screen.Height)
+        if (x < 0 || y < 0 || x >= _screen.Width || y >= _screen.Height)
         {
             return default;
         }
 
-        return Cells[(y * Screen.Width) + x];
+        return _cells[(y * _screen.Width) + x];
     }
 
-    public void SetRune(int x, int y, Rune rune)
+    public void SetCell(int x, int y, Cell cell)
     {
-        TrySetRune(x, y, rune, out _);
-    }
-
-    private bool TrySetRune(int x, int y, Rune rune, out bool moveForward)
-    {
-        var index = (y * Screen.Width) + x;
-        if (index < 0 || index >= Cells.Length)
+        var index = (y * _screen.Width) + x;
+        if (index < 0 || index >= _cells.Length)
         {
-            moveForward = false;
-            return false;
+            return;
         }
 
-        Cells[index].Rune = rune;
-        moveForward = true;
-        return true;
+        _cells[index] = cell;
     }
 
     public void Reset()
     {
-        var cells = new Cell[Screen.CalculateArea()];
+        var cells = new Cell[_screen.CalculateArea()];
         Array.Fill(cells, new Cell());
-        Cells = cells;
+        _cells = cells;
     }
 
     public void Resize(Rectangle area)
@@ -66,22 +58,22 @@ internal sealed class Buffer
         var cells = new Cell[area.CalculateArea()];
         Array.Fill(cells, new Cell());
 
-        Cells = cells;
-        Screen = area;
-        Length = Screen.CalculateArea();
+        _cells = cells;
+        _screen = area;
+        _length = _screen.CalculateArea();
     }
 
     public IEnumerable<(int x, int y, Cell)> Diff(Buffer other)
     {
-        foreach (var (index, (current, previous)) in other.Cells.Zip(Cells).Index())
+        foreach (var (index, (current, previous)) in other._cells.Zip(_cells).Index())
         {
             if (current.Equals(previous) || current == default)
             {
                 continue;
             }
 
-            var x = (index % Screen.Width) + Screen.X;
-            var y = (index / Screen.Width) + Screen.Y;
+            var x = (index % _screen.Width) + _screen.X;
+            var y = (index / _screen.Width) + _screen.Y;
             yield return (x, y, current);
         }
     }

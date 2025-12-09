@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Spectre.Tui;
 
-public class Renderer
+public sealed class Renderer
 {
     private readonly ITerminal _terminal;
     private readonly Stopwatch _stopwatch;

@@ -49,6 +49,7 @@ public readonly struct Rectangle(int x, int y, int width, int height)
                y >= Y && y <= Y + Height;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Intersects(Rectangle value)
     {
         return value.Left < Right && Left < value.Right &&
@@ -63,10 +64,10 @@ public readonly struct Rectangle(int x, int y, int width, int height)
     public Rectangle Inflate(int width, int height)
     {
         return new Rectangle(
-            x: X - width,
-            y: Y - height,
-            width: Width + (2 * width),
-            height: Height + (2 * height)
+            x: Math.Max(0, X - width),
+            y: Math.Max(0, Y - height),
+            width: Math.Max(0, Width + (2 * width)),
+            height: Math.Max(0, Height + (2 * height))
         );
     }
 
@@ -75,17 +76,17 @@ public readonly struct Rectangle(int x, int y, int width, int height)
         return Offset(offset.X, offset.Y);
     }
 
-    public static Rectangle Intersect(ref Rectangle first, ref Rectangle second)
+    public Rectangle Intersect(Rectangle other)
     {
-        if (!first.Intersects(second))
+        if (!Intersects(other))
         {
             throw new InvalidOperationException("The two rectangles do not intersect");
         }
 
-        var right = Math.Min(first.X + first.Width, second.X + second.Width);
-        var left = Math.Max(first.X, second.X);
-        var top = Math.Max(first.Y, second.Y);
-        var bottom = Math.Min(first.Y + first.Height, second.Y + second.Height);
+        var right = Math.Min(X + Width, other.X + other.Width);
+        var left = Math.Max(X, other.X);
+        var top = Math.Max(Y, other.Y);
+        var bottom = Math.Min(Y + Height, other.Y + other.Height);
 
         return new Rectangle(left, top, right - left, bottom - top);
     }

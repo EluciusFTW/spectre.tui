@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[Flags]
 public enum Decoration : ushort
 {
     None = 0,
@@ -9,7 +10,7 @@ public enum Decoration : ushort
     Underlined = 1 << 4,
     SlowBlink = 1 << 5,
     RapidBlink = 1 << 6,
-    Reversed = 1 << 7,
-    Hidden = 1 << 8,
-    CrossedOut = 1 << 9,
+    Invert = 1 << 7,
+    Conceal = 1 << 8,
+    Strikethrough = 1 << 9,
 }

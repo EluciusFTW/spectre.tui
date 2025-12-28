@@ -6,9 +6,14 @@ public sealed record TextLine
     public Style? Style { get; set; }
     public List<TextSpan> Spans { get; init; } = [];
 
-    public TextLine(TextSpan span)
+    public TextLine()
+        : this([])
     {
-        Spans = [span];
+    }
+
+    public TextLine(TextSpan span)
+        : this([span])
+    {
     }
 
     public TextLine(List<TextSpan> spans)

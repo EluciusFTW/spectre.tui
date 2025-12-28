@@ -6,14 +6,19 @@ public sealed record Text : IWidget
     public Style? Style { get; set; }
     public List<TextLine> Lines { get; } = [];
 
+    public Text()
+        : this([])
+    {
+    }
+
+    public Text(TextLine line)
+        : this([line])
+    {
+    }
+
     public Text(List<TextLine> lines)
     {
         Lines = lines ?? throw new ArgumentNullException(nameof(lines));
-    }
-
-    public Text(TextLine textLine)
-    {
-        Lines = [textLine ?? throw new ArgumentNullException(nameof(textLine))];
     }
 
     public int GetWidth()
@@ -24,6 +29,56 @@ public sealed record Text : IWidget
     public int GetHeight()
     {
         return Lines.Count;
+    }
+
+    public void Append(string text, Style? style)
+    {
+        foreach (var (_, first, last, part) in text.SplitLines().Enumerate())
+        {
+            if (first)
+            {
+                var line = Lines.LastOrDefault();
+
+                // No lines?
+                if (line == null)
+                {
+                    Lines.Add(new TextLine());
+                    line = Lines[^1];
+                }
+
+                // Empty part?
+                if (string.IsNullOrEmpty(part))
+                {
+                    line.Spans.Add(TextSpan.Empty);
+                }
+                else
+                {
+                    foreach (var span in part.SplitWords())
+                    {
+                        line.Spans.Add(new TextSpan(span, style ?? Tui.Style.Plain));
+                    }
+                }
+            }
+            else
+            {
+                var line = new TextLine();
+
+                // Empty part?
+                if (string.IsNullOrEmpty(part))
+                {
+                    line.Spans.Add(TextSpan.Empty);
+                }
+                else
+                {
+                    foreach (var span in part.SplitWords())
+                    {
+                        line.Spans.Add(new TextSpan(span, style ?? Tui.Style.Plain));
+                    }
+                }
+
+                Lines.Add(line);
+            }
+        }
     }
 
     public void Render(RenderContext context)
@@ -49,6 +104,11 @@ public static class TextExtensions
 {
     extension(Text)
     {
+        public static Text FromMarkup(string text, Style? style = null)
+        {
+            return MarkupParser.Parse(text, style);
+        }
+
         public static Text FromString(string text, Style? style = null)
         {
             List<TextLine> lines = [.. text.SplitLines().Select(line => TextLine.FromString(line, style))];

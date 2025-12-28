@@ -13,7 +13,7 @@ public sealed class FpsWidget : IWidget
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        _text = $" FPS: {text} ";
+        _text = $" [yellow]FPS:[/] {text} ";
         _style = new Style
         {
             Foreground = foreground ?? Color.Default,
@@ -24,7 +24,7 @@ public sealed class FpsWidget : IWidget
     public void Render(RenderContext context)
     {
         context.Render(
-            Text.FromString(_text, _style),
+            Text.FromMarkup(_text, _style),
             new Rectangle(
                 (context.Viewport.Width - _text.Length) / 2,
                 context.Viewport.Height / 2,

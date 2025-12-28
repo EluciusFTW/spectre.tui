@@ -12,6 +12,41 @@ internal static class StringExtensions
                 .Split(['\n'], StringSplitOptions.None) ?? [];
         }
 
+        internal string[] SplitWords()
+        {
+            var result = new List<string>();
+
+            using (var reader = new StringBuffer(text))
+            {
+                while (!reader.Eof)
+                {
+                    var current = reader.Peek();
+                    result.Add(char.IsWhiteSpace(current)
+                        ? Read(reader, char.IsWhiteSpace)
+                        : Read(reader, c => !char.IsWhiteSpace(c)));
+                }
+            }
+
+            return result.ToArray();
+
+            static string Read(StringBuffer reader, Func<char, bool> criteria)
+            {
+                var buffer = new StringBuilder();
+                while (!reader.Eof)
+                {
+                    var current = reader.Peek();
+                    if (!criteria(current))
+                    {
+                        break;
+                    }
+
+                    buffer.Append(reader.Read());
+                }
+
+                return buffer.ToString();
+            }
+        }
+
         private string NormalizeNewLines()
         {
             return text == null

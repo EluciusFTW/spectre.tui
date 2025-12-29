@@ -9,7 +9,7 @@ internal static class StringExtensions
         public string[] SplitLines()
         {
             return NormalizeNewLines(text)
-                .Split(['\n'], StringSplitOptions.None) ?? [];
+                .Split(['\n'], StringSplitOptions.None);
         }
 
         internal string[] SplitWords()

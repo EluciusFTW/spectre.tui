@@ -1,5 +1,6 @@
 namespace Spectre.Tui.Ansi;
 
+[PublicAPI]
 public abstract class AnsiTerminal : ITerminal
 {
     private readonly StringBuilder _buffer;

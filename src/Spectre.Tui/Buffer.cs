@@ -19,13 +19,6 @@ internal sealed class Buffer
         }
     }
 
-    public Cell? GetCell(int index)
-    {
-        return index < 0 || index >= _length
-            ? null
-            : _cells[index];
-    }
-
     public Cell? GetCell(int x, int y)
     {
         if (x < 0 || y < 0 || x >= _screen.Width || y >= _screen.Height)
@@ -38,9 +31,9 @@ internal sealed class Buffer
 
     public void Reset()
     {
-        for (var index = 0; index < _cells.Length; index++)
+        foreach (var cell in _cells)
         {
-            _cells[index].Reset();
+            cell.Reset();
         }
     }
 
@@ -87,7 +80,7 @@ internal static class BufferExtensions
             return Filled(region, new Cell());
         }
 
-        public static Buffer Filled(Rectangle area, Cell prototype)
+        private static Buffer Filled(Rectangle area, Cell prototype)
         {
             var cells = new Cell[area.CalculateArea()];
             for (var index = 0; index < cells.Length; index++)

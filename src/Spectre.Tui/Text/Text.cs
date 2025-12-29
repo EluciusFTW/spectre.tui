@@ -33,7 +33,7 @@ public sealed record Text : IWidget
 
     public void Append(string text, Style? style)
     {
-        foreach (var (_, first, last, part) in text.SplitLines().Enumerate())
+        foreach (var (_, first, _, part) in text.SplitLines().Enumerate())
         {
             if (first)
             {

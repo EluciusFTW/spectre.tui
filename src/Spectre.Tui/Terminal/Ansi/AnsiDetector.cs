@@ -89,9 +89,6 @@ internal static class AnsiDetector
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetStdHandle(int nStdHandle);
 
-        [DllImport("kernel32.dll")]
-        public static extern uint GetLastError();
-
         public static bool SupportsAnsi(bool upgrade, bool stdError, out bool isLegacy)
         {
             isLegacy = false;

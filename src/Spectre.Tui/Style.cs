@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Spectre.Tui;
 
 [PublicAPI]
@@ -52,6 +54,8 @@ public readonly record struct Style()
 
 internal static class StyleParser
 {
+    private static readonly char[] _separator = [' '];
+
     public static Style Parse(string text)
     {
         var style = Parse(text, out var error);
@@ -63,10 +67,10 @@ internal static class StyleParser
         return style ?? throw new InvalidOperationException("Could not parse style.");
     }
 
-    public static bool TryParse(string text, out Style? style)
+    public static bool TryParse(string text, [NotNullWhen(true)] out Style? style)
     {
-        style = Parse(text, out var error);
-        return error == null;
+        style = Parse(text, out var _);
+        return style != null;
     }
 
     private static Style? Parse(string text, out string? error)
@@ -75,7 +79,7 @@ internal static class StyleParser
         var effectiveForeground = (Color?)null;
         var effectiveBackground = (Color?)null;
 
-        var parts = text.Split(new[] { ' ' });
+        var parts = text.Split(_separator);
         var foreground = true;
         foreach (var part in parts)
         {
@@ -120,18 +124,18 @@ internal static class StyleParser
                     }
                     else if (int.TryParse(part, out var number))
                     {
-                        if (number < 0)
+                        switch (number)
                         {
-                            error = $"Color number must be greater than or equal to 0 (was {number})";
-                            return null;
+                            case < 0:
+                                error = $"Color number must be greater than or equal to 0 (was {number})";
+                                return null;
+                            case > 255:
+                                error = $"Color number must be less than or equal to 255 (was {number})";
+                                return null;
+                            default:
+                                color = number;
+                                break;
                         }
-                        else if (number > 255)
-                        {
-                            error = $"Color number must be less than or equal to 255 (was {number})";
-                            return null;
-                        }
-
-                        color = number;
                     }
                     else
                     {
@@ -186,19 +190,18 @@ internal static class StyleParser
         {
             if (!string.IsNullOrWhiteSpace(hex))
             {
-                if (hex.Length == 6)
+                switch (hex.Length)
                 {
-                    return new Color(
-                        (byte)Convert.ToUInt32(hex.Substring(0, 2), 16),
-                        (byte)Convert.ToUInt32(hex.Substring(2, 2), 16),
-                        (byte)Convert.ToUInt32(hex.Substring(4, 2), 16));
-                }
-                else if (hex.Length == 3)
-                {
-                    return new Color(
-                        (byte)Convert.ToUInt32(new string(hex[0], 2), 16),
-                        (byte)Convert.ToUInt32(new string(hex[1], 2), 16),
-                        (byte)Convert.ToUInt32(new string(hex[2], 2), 16));
+                    case 6:
+                        return new Color(
+                            (byte)Convert.ToUInt32(hex[..2], 16),
+                            (byte)Convert.ToUInt32(hex.Substring(2, 2), 16),
+                            (byte)Convert.ToUInt32(hex.Substring(4, 2), 16));
+                    case 3:
+                        return new Color(
+                            (byte)Convert.ToUInt32(new string(hex[0], 2), 16),
+                            (byte)Convert.ToUInt32(new string(hex[1], 2), 16),
+                            (byte)Convert.ToUInt32(new string(hex[2], 2), 16));
                 }
             }
         }

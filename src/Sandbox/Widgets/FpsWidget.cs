@@ -7,13 +7,14 @@ public sealed class FpsWidget : IWidget
     private readonly string _text;
     private readonly Style _style;
 
-    public FpsWidget(string text,
+    public FpsWidget(
+        TimeSpan elapsed,
         Color? foreground = null,
         Color? background = null)
     {
-        ArgumentNullException.ThrowIfNull(text);
+        var fps = TimeSpan.FromSeconds(1) / elapsed;
 
-        _text = $" [yellow]FPS:[/] {text} ";
+        _text = $"[yellow]FPS:[/] {fps:0.000}";
         _style = new Style
         {
             Foreground = foreground ?? Color.Default,

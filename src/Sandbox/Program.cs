@@ -10,6 +10,7 @@ public static class Program
 
         using var terminal = Terminal.Create();
         var renderer = new Renderer(terminal);
+        renderer.SetTargetFps(60);
 
         Console.Title = "Spectre.Tui Sandbox";
 
@@ -30,7 +31,7 @@ public static class Program
 
                 // FPS
                 ctx.Render(
-                    new FpsWidget(((int)(1.0f / elapsed.TotalSeconds)).ToString(), foreground: Color.Green),
+                    new FpsWidget(elapsed, foreground: Color.Green),
                     inner.Inflate(-1, -1));
 
                 // Some text

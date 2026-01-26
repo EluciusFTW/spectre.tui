@@ -118,6 +118,6 @@ public sealed class InlineMode : ITerminalMode
         }
 
         // Move to absolute column
-        writer.CursorToColumn(x + 1);
+        writer.CursorHorizontalAbsolute(x + 1);
     }
 }

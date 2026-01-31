@@ -80,6 +80,13 @@ public abstract class AnsiTerminal : ITerminal
         // _writer.CursorPosition(y + 1, x + 1);
 
         Mode.MoveTo(x, y, _writer);
+
+        // Invalidate tracked SGR state. InlineMode.MoveTo uses \e[u
+        // (restore cursor) which some terminals (especially Windows)
+        // interpret as DECRC, resetting SGR attributes to defaults.
+        // Without this, AnsiState._previous would be stale and the
+        // next Write could skip re-emitting style codes.
+        _state.Reset();
     }
 
     public void Write(Cell cell)
@@ -120,6 +127,17 @@ public abstract class AnsiTerminal : ITerminal
             }
 
             return _current != _previous;
+        }
+
+        /// <summary>
+        /// Invalidates tracked state so the next <see cref="Update"/>
+        /// unconditionally signals a style change, forcing full SGR
+        /// re-emission.
+        /// </summary>
+        public void Reset()
+        {
+            _previous = null;
+            _current = null;
         }
 
         public void Swap()

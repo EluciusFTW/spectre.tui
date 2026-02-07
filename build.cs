@@ -23,7 +23,6 @@ Task("Lint")
 
 Task("Build")
     .IsDependentOn("Clean")
-    .IsDependentOn("Lint")
     .Does(context =>
 {
     DotNetBuild("./src/Spectre.Tui.slnx", new DotNetBuildSettings

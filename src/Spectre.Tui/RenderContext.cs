@@ -40,8 +40,10 @@ public static class RenderContextExtensions
 
             var screen = context.Screen.Intersect(
                 new Rectangle(
-                    context.Screen.X + area.X, context.Screen.Y + area.Y,
-                    area.Width, area.Height));
+                    context.Screen.X + area.X,
+                    context.Screen.Y + area.Y,
+                    area.Width,
+                    area.Height));
 
             var viewport = new Rectangle(0, 0, screen.Width, screen.Height);
             widget.Render(context with
@@ -51,7 +53,7 @@ public static class RenderContextExtensions
             });
         }
 
-        public Position SetString(int x, int y, string text, Appearance? style, int? maxWidth = null)
+        public Position SetString(int x, int y, string text, Style? style, int? maxWidth = null)
         {
             var remainingWidth = Math.Min(context.Viewport.Right - x, maxWidth ?? context.Viewport.Right);
 
@@ -120,12 +122,12 @@ public static class RenderContextExtensions
             context.GetCell(x, y)?.SetSymbol(symbol);
         }
 
-        public void SetStyle(int x, int y, Appearance? style)
+        public void SetStyle(int x, int y, Style? style)
         {
             context.GetCell(x, y)?.SetStyle(style);
         }
 
-        public void SetStyle(Rectangle area, Appearance? style)
+        public void SetStyle(Rectangle area, Style? style)
         {
             if (style == null)
             {

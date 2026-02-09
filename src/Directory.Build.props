@@ -1,7 +1,7 @@
-﻿<Project>
+<Project>
   <PropertyGroup Label="Settings">
     <Deterministic>true</Deterministic>
-    <LangVersion>14</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DebugSymbols>true</DebugSymbols>

@@ -12,6 +12,7 @@
     <File Path="Directory.Packages.props" />
     <File Path="..\build.cs" />
   </Folder>
+  <Project Path="FsSandbox/FsSandbox.fsproj" />
   <Project Path="Sandbox\Sandbox.csproj">
     <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
     <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />

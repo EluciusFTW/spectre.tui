@@ -10,7 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-   <PackageReference Include="FSharp.Core"/>
+   <PackageReference Include="Elmish" />
+   <PackageReference Include="FSharp.Core" />
   </ItemGroup>
 
   <ItemGroup>

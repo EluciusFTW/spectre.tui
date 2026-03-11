@@ -1,60 +1,55 @@
 open Elmish
 open System
 
-type Model = { Count: int; ShouldExit: bool }
-
 type Msg =
-    | KeyPressed of ConsoleKeyInfo
-    | Increment of int
-    | Decrement
+    | InputMsg of Input.Msg
+    | LogicMsg of Logic.Msg
     | Exit
 
-let init () = { Count = 0; ShouldExit = false }, []
+type Model = { LogicModel: Logic.Model; ExitEvent: Threading.ManualResetEventSlim }
+
+let exitEvent = new System.Threading.ManualResetEventSlim(false);
+let init () = { LogicModel = { Count = 0; }; ExitEvent = exitEvent }, []
 
 let update msg model =
+    Console.Clear ()
     match msg with
-    | KeyPressed key ->
-        match key.Key with
-        | ConsoleKey.D1 -> model, Cmd.ofMsg (Increment 1)
-        | ConsoleKey.D5 -> model, Cmd.ofMsg (Increment 5)
-        | ConsoleKey.D2 -> model, Cmd.ofMsg (Increment 2)
-        | ConsoleKey.Q -> model, Cmd.ofMsg (Exit)
-        | _ -> model, Cmd.none
-    | Increment n -> { model with Count = model.Count + n }, []
-    | Decrement -> { model with Count = model.Count - 1 }, []
-    | Exit -> model, Cmd.ofMsg (Increment 7)
+    | InputMsg inputMsg ->
+        match inputMsg with
+        | Input.KeyPressed key ->
+            match key.Key with
+            | ConsoleKey.D1 -> model, Cmd.ofMsg (LogicMsg (Logic.Increment 1))
+            | ConsoleKey.D5 -> model, Cmd.ofMsg (LogicMsg (Logic.Increment 5))
+            | ConsoleKey.D2 -> model, Cmd.ofMsg (LogicMsg (Logic.Increment 2))
+            | ConsoleKey.Q -> model, Cmd.ofMsg Exit
+            | _ -> model, Cmd.none
+    | LogicMsg logicMsg ->
+        let logicModel, command = Logic.update logicMsg model.LogicModel
+        { model with LogicModel = logicModel }, command
+    | Exit -> model.ExitEvent.Set()
+              model, []
 
 let view model dispatch =
-    printfn "Count: %d" model.Count
-    printfn "[+] increment | [-] decrement | [q] quit"
+    printfn "---------------------------------"
+    printfn "Count: %d" model.LogicModel.Count
 
-let keyListener (model: Model) : Sub<Msg> =
-    let sub dispatch =
-        let cts = new System.Threading.CancellationTokenSource()
+let logTrace msg model subs =
+    eprintfn "Msg: %A" msg
+    eprintfn "Model: %A" model
+    eprintfn "Subs: %A" subs
 
-        let rec loop () =
-            async {
-                let key = Console.ReadKey(true)
-                dispatch (KeyPressed key)
-                if not model.ShouldExit then do! loop () else cts.Cancel()
-            }
-
-        Async.Start(loop (), cts.Token)
-
-        { new System.IDisposable with
-            member _.Dispose() = cts.Cancel() }
-
-    if model.ShouldExit then [] else [ [ "keyListener" ], sub ]
+let noLog _ __ ___ = ()
 
 open Spectre.Tui
 
-use terminal = Terminal.Create()
-let renderer = new Renderer(terminal)
-renderer.SetTargetFps(144) |> ignore
+Console.Clear ()
+let terminal = Terminal.Create ()
+let renderer = Renderer terminal
+renderer.SetTargetFps 144
 
 Program.mkProgram init update view
-|> Program.withSubscription keyListener
-|> Program.withTrace (fun msg model _ ->
-    eprintfn "Msg: %A" msg
-    eprintfn "Model: %A" model)
+|> Input.withKeyListener InputMsg
+|> Program.withTrace noLog
 |> Program.run
+
+exitEvent.Wait()

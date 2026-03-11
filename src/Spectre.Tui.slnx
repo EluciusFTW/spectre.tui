@@ -12,24 +12,24 @@
     <File Path="Directory.Packages.props" />
     <File Path="..\build.cs" />
   </Folder>
-  <Project Path="FsSandbox\FsSandbox.fsproj">
+  <Project Path="FsSandbox/FsSandbox.fsproj">
     <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
     <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
     <Configuration Solution="Release|x64" Project="Release|Any CPU" />
     <Configuration Solution="Release|x86" Project="Release|Any CPU" />
   </Project>
-  <Project Path="Sandbox\Sandbox.csproj">
+  <Project Path="Sandbox/Sandbox.csproj">
     <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
     <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
     <Configuration Solution="Release|x64" Project="Release|Any CPU" />
     <Configuration Solution="Release|x86" Project="Release|Any CPU" />
   </Project>
-  <Project Path="Spectre.Tui.Testing\Spectre.Tui.Testing.csproj">
+  <Project Path="Spectre.Tui.Testing/Spectre.Tui.Testing.csproj">
     <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
     <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
     <Configuration Solution="Release|x64" Project="Release|Any CPU" />
     <Configuration Solution="Release|x86" Project="Release|Any CPU" />
   </Project>
-  <Project Path="Spectre.Tui.Tests\Spectre.Tui.Tests.csproj" />
-  <Project Path="Spectre.Tui\Spectre.Tui.csproj" />
+  <Project Path="Spectre.Tui.Tests/Spectre.Tui.Tests.csproj" />
+  <Project Path="Spectre.Tui/Spectre.Tui.csproj" />
 </Solution>

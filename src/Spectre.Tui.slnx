@@ -24,6 +24,7 @@
     <Configuration Solution="Release|x64" Project="Release|Any CPU" />
     <Configuration Solution="Release|x86" Project="Release|Any CPU" />
   </Project>
+  <Project Path="Spectre.Tui.Fsharp/Spectre.Tui.Fsharp.fsproj" />
   <Project Path="Spectre.Tui.Testing/Spectre.Tui.Testing.csproj">
     <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
     <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />

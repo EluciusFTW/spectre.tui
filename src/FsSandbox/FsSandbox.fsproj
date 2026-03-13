@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spectre.Tui\Spectre.Tui.csproj" />
+    <ProjectReference Include="..\Spectre.Tui.Fsharp\Spectre.Tui.Fsharp.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

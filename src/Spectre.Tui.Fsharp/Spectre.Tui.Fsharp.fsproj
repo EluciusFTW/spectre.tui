@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Spectre.Tui/Spectre.Tui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="View.fs" />
+    <Compile Include="Widgets/Box.fs" />
   </ItemGroup>
 
 </Project>

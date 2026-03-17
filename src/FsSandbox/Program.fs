@@ -45,10 +45,10 @@ let view (renderer: Renderer) model dispatch =
         let count = model.LogicModel.Count
 
         for i in [ 0..count ] do
+            RenderContextExtensions.Render(ctx, box, shrink vp i i)
 
-            ctx.Render(box, shrink vp i i)
-
-        ctx.Render(
+        RenderContextExtensions.Render(
+            ctx,
             Text(LineExtensions.FromString $"Current Count: {model.LogicModel.Count}"),
             shrink vp (count + 1) (count + 1)
         ))

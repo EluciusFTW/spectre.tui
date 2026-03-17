@@ -1,7 +1,6 @@
 namespace Spectre.Tui.FSharp.Widgets
 
 open Spectre.Tui
-open Spectre.Tui.FSharp.View
 
 [<AutoOpen>]
 module Box =

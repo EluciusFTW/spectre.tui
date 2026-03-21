@@ -38,14 +38,31 @@ let update msg model =
 open Spectre.Tui
 open Spectre.Tui.FSharp.View
 open Spectre.Tui.FSharp.Widgets
+open Spectre.Tui.FSharp.Layout
+
+let layout =
+    layout "main"
+    |> splitHorizontally [|
+        layout "left";
+        layout "right"
+        |> splitVertically [|
+            layout "one";
+            layout "two" |> hide;
+            layout "three"
+        |]
+    |]
+
+let widgets = [
+    "green", box Spectre.Console.Color.Green
+    "red", box Spectre.Console.Color.Red
+]
+
+
 
 let view (renderer: Renderer) model dispatch =
     renderer.Draw(fun ctx elapsed ->
-        let vp = ctx.Viewport
-        let count = model.LogicModel.Count
 
         for i in [ 0..count ] do
-
             ctx.Render(box, shrink vp i i)
 
         ctx.Render(

@@ -4,7 +4,9 @@ open Spectre.Tui
 
 [<AutoOpen>]
 module Box =
-    let box = BoxWidget Spectre.Console.Color.Red
+
+    let box color =
+        BoxWidget color
 
     let withBorder (box: BoxWidget) border =
         box.Border <- border

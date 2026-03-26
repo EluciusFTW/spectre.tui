@@ -76,7 +76,7 @@ let terminal = Terminal.Create()
 let renderer = Renderer terminal
 renderer.SetTargetFps 144
 
-Program.mkProgram init update (view renderer)
+Program.mkProgram init update (fun m d -> ListWidget.view renderer m.ListModel (ListMsg >> d))
 |> Input.withKeyListener InputMsg
 |> Program.withTrace noLog
 |> Program.run

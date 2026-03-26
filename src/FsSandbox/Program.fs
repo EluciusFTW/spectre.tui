@@ -2,6 +2,7 @@ open Elmish
 open System
 open FsSandbox
 open FsSandbox.ListWidget
+open Spectre.Tui.FSharp.Widgets
 
 type Msg =
     | InputMsg of Input.Msg
@@ -18,7 +19,15 @@ let exitEvent = new Threading.ManualResetEventSlim false
 
 let init () =
     { LogicModel = { Count = 0 }
-      ListModel = { index = 0 }
+      ListModel =
+        { index = 0
+          items = [
+            ListItem "F# Elmish"
+            ListItem "Spectre.Tui"
+            ListItem "List Widget"
+            ListItem "Interactive"
+            ListItem "Sandbox"
+          ] }
       ExitEvent = exitEvent },
     []
 
@@ -39,9 +48,8 @@ let update msg model =
         let logicModel, command = Logic.update logicMsg model.LogicModel
         { model with LogicModel = logicModel }, command
     | ListMsg listMsg ->
-        match listMsg with
-        | Up -> { model with ListModel = { index = model.ListModel.index - 1 } }, []
-        | Down -> { model with ListModel = { index = model.ListModel.index + 1 } }, []
+        let listModel, command = ListWidget.update listMsg model.ListModel
+        { model with ListModel = listModel }, []
     | Exit ->
         model.ExitEvent.Set()
         model, []

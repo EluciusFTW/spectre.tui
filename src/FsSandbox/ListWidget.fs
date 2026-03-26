@@ -4,26 +4,33 @@ open Spectre.Tui
 open Spectre.Tui.FSharp.Widgets
 open Spectre.Console
 
-type Model = { index: int }
+type Model =
+    { index: int
+      items: ListItem list }
 
 type Msg =
     | Up
     | Down
 
+let update msg model =
+    let itemCount = model.items.Length
+    if itemCount = 0 then
+        model, []
+    else
+        match msg with
+        | Up ->
+            let nextIndex = (model.index - 1 + itemCount) % itemCount
+            { model with  index = nextIndex } , []
+        | Down ->
+            let nextIndex = (model.index + 1) % itemCount
+            { model with  index = nextIndex } , []
+
 let view (renderer: Renderer) (model: Model) dispatch =
     renderer.Draw(fun ctx elapsed ->
         let vp = ctx.Viewport
 
-        let items = [
-            ListItem "F# Elmish"
-            ListItem "Spectre.Tui"
-            ListItem "List Widget"
-            ListItem "Interactive"
-            ListItem "Sandbox"
-        ]
-
         let listW =
-            listWidget items
+            listWidget model.items
             |> selectedIndex model.index
             |> withHighlightSymbol (LineExtensions.FromString("> ", Style(Color.Blue)))
             |> withWrapAround true
@@ -31,7 +38,6 @@ let view (renderer: Renderer) (model: Model) dispatch =
         let listArea = Rectangle(vp.X + 2, vp.Y + 2, 30, 10)
         RenderContextExtensions.Render(ctx, listW, listArea)
 
-        let info = $"Selected Index: {model.index}"
-        RenderContextExtensions
-            .Render(ctx, Text(LineExtensions.FromString(info, Style(Color.Green))), Rectangle(vp.X + 2, vp.Y + 13, 30, 1))
+        let info = $"Selected Index: {model.index} (of {model.items.Length})"
+        RenderContextExtensions.Render(ctx, Text(LineExtensions.FromString(info, Style(Color.Green))), Rectangle(vp.X + 2, vp.Y + 13, 30, 1))
     )

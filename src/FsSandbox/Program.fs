@@ -56,7 +56,6 @@ let update msg model =
 
 open Spectre.Tui
 open Spectre.Tui.FSharp.View
-open Spectre.Tui.FSharp.Widgets
 
 let view (renderer: Renderer) model dispatch =
     renderer.Draw(fun ctx elapsed ->

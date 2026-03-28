@@ -43,6 +43,7 @@ let update msg model =
             | ConsoleKey.UpArrow -> model, Cmd.ofMsg (ListMsg(Up))
             | ConsoleKey.DownArrow -> model, Cmd.ofMsg (ListMsg(Down))
             | ConsoleKey.Delete -> model, Cmd.ofMsg (ListMsg(Delete))
+            | ConsoleKey.A -> model, Cmd.ofMsg (ListMsg(Add))
             | ConsoleKey.Q -> model, Cmd.ofMsg Exit
             | _ -> model, Cmd.none
     | LogicMsg logicMsg ->

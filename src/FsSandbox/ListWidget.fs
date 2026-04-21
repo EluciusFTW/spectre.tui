@@ -1,6 +1,5 @@
 module FsSandbox.ListWidget
 
-open System
 open Spectre.Tui
 open Spectre.Tui.FSharp.Widgets
 open Spectre.Console
@@ -36,7 +35,6 @@ let update msg model =
                 items = model.items |> List.insertAt model.index (ListItem "Added Item")
                 index = (model.index + 1) % model.items.Length - 1 },
             []
-
 
 let view (renderer: Renderer) (model: Model) dispatch =
     renderer.Draw(fun ctx elapsed ->

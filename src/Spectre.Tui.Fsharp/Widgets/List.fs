@@ -15,7 +15,6 @@ module ListWidgetFSharp =
     let listWidget<'t when 't :> IListWidgetItem> (items: 't seq) =
         ListWidget<'t>(List<'t>(items))
 
-
     let withHighlightStyle style (list: ListWidget<'t>) =
         list.HighlightStyle <- style
         list

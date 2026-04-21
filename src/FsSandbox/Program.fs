@@ -40,6 +40,7 @@ let update msg model =
             | ConsoleKey.D1 -> model, Cmd.ofMsg (LogicMsg(Logic.Increment 1))
             | ConsoleKey.D5 -> model, Cmd.ofMsg (LogicMsg(Logic.Increment 5))
             | ConsoleKey.D2 -> model, Cmd.ofMsg (LogicMsg(Logic.Increment 2))
+            // delegate this to list module, so its own stuff is encapsylated. active pattern
             | ConsoleKey.UpArrow -> model, Cmd.ofMsg (ListMsg(Up))
             | ConsoleKey.DownArrow -> model, Cmd.ofMsg (ListMsg(Down))
             | ConsoleKey.Delete -> model, Cmd.ofMsg (ListMsg(Delete))

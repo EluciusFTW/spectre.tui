@@ -1,6 +1,6 @@
 Daniel
-- List widget
-  - show guy: bug without debugging, but not reproducible
+- List widget todo
+- fix bug
 - Syncing of Forks best Practices
 
 Guy
